@@ -1,0 +1,252 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 240 60% 30%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 240 60% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 240 60% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 240 60% 50%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    /* Main background and foreground */
+    --background: 0 0% 7%; /* #121212 */
+    --foreground: 0 0% 88%; /* #E0E0E0 */
+
+    /* Card and elevated elements */
+    --card: 0 0% 12%; /* #1E1E1E */
+    --card-foreground: 0 0% 88%; /* #E0E0E0 */
+
+    /* Popover elements */
+    --popover: 0 0% 12%; /* #1E1E1E */
+    --popover-foreground: 0 0% 88%; /* #E0E0E0 */
+
+    /* Primary accent colors */
+    --primary: 207 90% 54%; /* #1E88E5 - Material Design blue */
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary accent colors */
+    --secondary: 174 100% 29%; /* #03DAC6 - Material Design cyan */
+    --secondary-foreground: 0 0% 88%; /* #E0E0E0 */
+
+    /* Muted elements */
+    --muted: 0 0% 16%; /* #292929 */
+    --muted-foreground: 0 0% 69%; /* #B0B0B0 */
+
+    /* Accent elements */
+    --accent: 0 0% 16%; /* #292929 */
+    --accent-foreground: 0 0% 88%; /* #E0E0E0 */
+
+    /* Destructive elements */
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 88%; /* #E0E0E0 */
+
+    /* Borders and inputs */
+    --border: 0 0% 16%; /* #292929 */
+    --input: 0 0% 16%; /* #292929 */
+    --ring: 207 90% 54%; /* #1E88E5 */
+  }
+
+  .card {
+    @apply bg-gray-50 border border-gray-200 dark:bg-[#1a2337] dark:border-[#292929] rounded-lg shadow-md transition-all;
+  }
+
+  .card:hover {
+    @apply shadow-lg;
+  }
+}
+
+/* Smooth transitions for all elements */
+* {
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-color 0.3s ease-in-out, box-shadow 0.3s
+    ease-in-out;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Dark mode text improvements */
+  .dark h1,
+  .dark h2,
+  .dark h3,
+  .dark h4,
+  .dark h5,
+  .dark h6 {
+    color: #e0e0e0; /* Primary text */
+  }
+
+  .dark p,
+  .dark span,
+  .dark li {
+    color: #b0b0b0; /* Secondary text */
+  }
+
+  /* Card styling in dark mode */
+  .dark .bg-white {
+    background-color: #1a2337; /* Changed from #1E1E1E to #1a2337 - dark navy blue */
+    border: 1px solid #292929; /* Card border */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .dark .bg-white:hover {
+    background-color: #232d45; /* Slightly lighter navy blue on hover */
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Background colors */
+  .dark .bg-gray-50 {
+    background-color: #121212; /* Main background */
+  }
+
+  .dark .bg-gray-100 {
+    background-color: #1a1a1a; /* Slightly elevated background */
+  }
+
+  /* Button styling */
+  .dark .bg-primary {
+    background-color: #1e88e5; /* Primary button */
+  }
+
+  .dark .bg-primary:hover {
+    background-color: #1565c0; /* Primary button hover */
+  }
+
+  .dark .bg-secondary {
+    background-color: #03dac6; /* Secondary button */
+  }
+
+  .dark .bg-secondary:hover {
+    background-color: #018786; /* Secondary button hover */
+  }
+
+  /* Link styling */
+  .dark .text-primary {
+    color: #64b5f6; /* Primary links */
+  }
+
+  .dark .hover\:text-primary:hover {
+    color: #42a5f5; /* Link hover */
+  }
+
+  /* Disabled elements */
+  .dark .text-gray-400,
+  .dark .text-gray-500 {
+    color: #6d6d6d; /* Disabled text */
+  }
+
+  /* Border colors */
+  .dark .border-gray-200,
+  .dark .border-gray-300 {
+    border-color: #292929; /* Borders and separators */
+  }
+
+  /* Input styling */
+  .dark input,
+  .dark textarea,
+  .dark select {
+    background-color: #1e1e1e;
+    border-color: #292929;
+    color: #e0e0e0;
+  }
+
+  .dark input:focus,
+  .dark textarea:focus,
+  .dark select:focus {
+    border-color: #1e88e5;
+    box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.2);
+  }
+
+  /* Card components with enhanced styling */
+  .dark .card {
+    background-color: #1a2337; /* Changed from #1E1E1E to #1a2337 */
+    border: 1px solid #292929;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .dark .card:hover {
+    background-color: #232d45; /* Slightly lighter navy blue on hover */
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Icons in dark mode */
+  .dark svg {
+    color: #b0b0b0;
+  }
+
+  /* Dropdown and menu styling */
+  .dark .dropdown-content,
+  .dark .menu {
+    background-color: #1e1e1e;
+    border: 1px solid #292929;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 640px) {
+    h1 {
+      font-size: 1.75rem !important;
+      line-height: 2.25rem !important;
+    }
+
+    h2 {
+      font-size: 1.5rem !important;
+      line-height: 2rem !important;
+    }
+
+    h3 {
+      font-size: 1.25rem !important;
+      line-height: 1.75rem !important;
+    }
+
+    p,
+    li,
+    a {
+      font-size: 0.9375rem !important;
+    }
+
+    .container {
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+    }
+
+    .py-16 {
+      padding-top: 2.5rem !important;
+      padding-bottom: 2.5rem !important;
+    }
+
+    .py-24 {
+      padding-top: 3rem !important;
+      padding-bottom: 3rem !important;
+    }
+
+    .gap-8 {
+      gap: 1.25rem !important;
+    }
+  }
+}
+

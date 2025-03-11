@@ -1,0 +1,9 @@
+<svg width="200" height="80" viewBox="0 0 200 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="80" rx="10" fill="#2A2A72"/>
+  <circle cx="40" cy="30" r="15" stroke="white" stroke-width="2"/>
+  <path d="M32 30C32 30 36 24 40 30C44 36 48 30 48 30" stroke="white" stroke-width="2"/>
+  <text x="65" y="35" font-family="Arial" font-weight="bold" font-size="20" fill="white">ONE APPLY</text>
+  <text x="65" y="55" font-family="Arial" font-size="12" fill="white">ONE APPLICATION</text>
+  <text x="65" y="70" font-family="Arial" font-size="12" fill="white">SECURED INTERNSHIP</text>
+</svg>
+

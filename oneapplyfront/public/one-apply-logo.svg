@@ -1,0 +1,9 @@
+<svg width="200" height="80" viewBox="0 0 200 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="200" height="80" rx="10" fill="#2A2A72"/>
+<path d="M40 20C51.0457 20 60 28.9543 60 40C60 51.0457 51.0457 60 40 60C28.9543 60 20 51.0457 20 40C20 28.9543 28.9543 20 40 20ZM40 25C31.7157 25 25 31.7157 25 40C25 48.2843 31.7157 55 40 55C48.2843 55 55 48.2843 55 40C55 31.7157 48.2843 25 40 25Z" fill="white"/>
+<path d="M52 52L58 58" stroke="white" stroke-width="4" stroke-linecap="round"/>
+<text x="75" y="35" font-family="Arial" font-weight="bold" font-size="20" fill="white">ONE APPLY</text>
+<text x="75" y="55" font-family="Arial" font-size="12" fill="white">ONE APPLICATION</text>
+<text x="75" y="70" font-family="Arial" font-size="12" fill="white">SECURED INTERNSHIP</text>
+</svg>
+
