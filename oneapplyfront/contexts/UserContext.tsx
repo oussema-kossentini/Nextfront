@@ -9,24 +9,17 @@ export interface IUser {
     id: number;
     email: string;
     role: UserRole;
-
-    // Infos intern (nullable)
     firstName?: string;
     lastName?: string;
     birthDate?: string;
     status?: "unapplied" | "applied" | "found_a_job";
-
-    // Infos company (nullable)
     companyName?: string;
     industryType?: string;
     website?: string;
-
-    // Champs communs
     phone?: string;
-    image?: string; // Stocke en URL ou Base64 côté frontend, pas Buffer
+    image?: string;
     address?: string;
     isVerified?: boolean;
-
     createdAt?: string;
     updatedAt?: string;
 }
@@ -41,53 +34,69 @@ interface IUserContext {
 // Création du contexte
 const UserContext = createContext<IUserContext | undefined>(undefined);
 
-// Hook personnalisé pour faciliter l'utilisation
+// Hook personnalisé pour accéder au contexte
 export const useUser = () => {
     const context = useContext(UserContext);
     if (!context) throw new Error("useUser must be used within UserProvider");
     return context;
 };
 
-// Props Provider
-interface UserProviderProps {
-    children: ReactNode;
-}
-
-// Composant Provider avec fetch périodique
-export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
+// Composant Provider
+export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<IUser | null>(null);
+    const [pendingEmail, setPendingEmailState] = useState<string | null>(null);
 
-    // Mise à jour partielle du user
     const updateUser = (updatedFields: Partial<IUser>) => {
         setUser((prevUser) => (prevUser ? { ...prevUser, ...updatedFields } : prevUser));
     };
 
-    // Fonction pour récupérer les infos utilisateur
+    // ✅ Fonction pour récupérer l'utilisateur depuis l'API
     const fetchUser = async () => {
         try {
             const response = await fetch("http://localhost:3000/auth/me", {
                 method: "GET",
-                credentials: "include",
+                credentials: "include"
             });
             if (!response.ok) throw new Error("Non authentifié");
+
             const userData: IUser = await response.json();
             setUser(userData);
+            console.log("✅ Utilisateur récupéré :", userData);
         } catch (err) {
-            console.log("🔴 Erreur lors du fetch des données utilisateur :", err);
             setUser(null);
+            console.warn("⚠️ Utilisateur non authentifié.");
         }
     };
 
-    // Fetch au chargement initial + Fetch périodique toutes les 2 secondes
     useEffect(() => {
-        fetchUser(); // Premier fetch au chargement
+        // 🔥 Stocke l'état d'authentification
+        if (user) {
+            console.log("✅ Utilisateur connecté :", user);
+            localStorage.setItem("isAuthenticated", "true");
+        } else {
+            console.log("⚠️ Aucun utilisateur connecté.");
+            localStorage.removeItem("isAuthenticated");
+        }
+    }, [user]);
 
-        const interval = setInterval(() => {
-            fetchUser();
-        }, 2000); // 🔄 Fetch toutes les 2 secondes
+    useEffect(() => {
+        // 🔥 Vérifie l'email en attente de vérification
+        const storedEmail = localStorage.getItem("pendingEmail");
+        if (storedEmail) {
+            setPendingEmailState(storedEmail);
+        }
 
-        return () => clearInterval(interval); // Nettoyage du setInterval
+        // 🔥 Récupère l'utilisateur au démarrage
+        fetchUser();
+
+        // 🔄 Met à jour l'utilisateur toutes les 2 secondes
+        const interval = setInterval(fetchUser, 2000);
+        return () => clearInterval(interval);
     }, []);
 
-    return <UserContext.Provider value={{ user, setUser, updateUser }}>{children}</UserContext.Provider>;
+    return (
+        <UserContext.Provider value={{ user, setUser, updateUser }}>
+            {children}
+        </UserContext.Provider>
+    );
 };

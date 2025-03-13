@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose"; // ✅ Utilise `jose` pour décoder le token JWT
 
-const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET || "your_secret_key");
+const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET || "problem de recupperation ");
 
 export async function middleware(request: NextRequest) {
   console.log("🔍 Middleware activé :", request.nextUrl.pathname);
@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
 
   const protectedRoutes = ["/profile", "/dashboard"];
 
-  // ✅ Vérifier si l'utilisateur a un token
+  //  Vérifier si l'utilisateur a un token
   const authToken = request.cookies.get("authToken")?.value;
 
   if (!authToken) {
@@ -24,7 +24,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // ✅ Décoder le JWT en utilisant `jose`
+  // Décoder le JWT en utilisant `jose`
   let userRole;
   try {
     const { payload } = await jwtVerify(authToken, SECRET_KEY);
@@ -39,13 +39,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
-  // ✅ Rediriger les utilisateurs connectés loin de /sign-in et /register
+  //  Rediriger les utilisateurs connectés loin de /sign-in et /register
   if (isAuthPage) {
     const redirectPath = userRole === "company" ? "/profile/company" : "/profile/intern";
     return NextResponse.redirect(new URL(redirectPath, request.url));
   }
 
-  // ✅ Bloquer l'accès aux espaces non autorisés
+  //  Bloquer l'accès aux espaces non autorisés
   if (request.nextUrl.pathname.startsWith("/profile/intern") && userRole !== "intern") {
     console.warn("🚫 Accès interdit à /profile/intern pour une company.");
     return NextResponse.redirect(new URL("/profile/company", request.url));
@@ -59,7 +59,7 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// ✅ Routes protégées par le middleware
+//  Routes protégées par le middleware
 export const config = {
   matcher: ["/profile/:path*", "/dashboard/:path*", "/sign-in", "/register/:path*"],
 };

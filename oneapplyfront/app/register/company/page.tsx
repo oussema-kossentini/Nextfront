@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React, {useEffect} from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
@@ -17,9 +17,17 @@ import { useLanguage } from "@/contexts/language-context"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { authService } from "@/services/auth-service"
+import {useUser} from "@/contexts/UserContext";
+import {encryptData, generateKey} from "@/app/utils/crypto-utils";
 
 export default function RegisterCompany() {
+  useEffect(() => {
+    localStorage.clear();
+    console.log("🗑️ LocalStorage vidé !");
+  }, []);
+
   const { t } = useLanguage()
+  const { setPendingEmail } = useUser(); // ✅ Stocke temporairement l'email
   const router = useRouter()
   const [formData, setFormData] = useState({
     companyName: "",
@@ -33,11 +41,26 @@ export default function RegisterCompany() {
   const [phoneNumber, setPhoneNumber] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState("")
+  const [emailError, setEmailError] = useState("");
+  const forbiddenDomains = ["gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "aol.com", "icloud.com"];
+
+  const isProfessionalEmail = (email: string) => {
+    const domain = email.split("@")[1];
+    return domain && !forbiddenDomains.includes(domain.toLowerCase());
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "email") {
+      if (!isProfessionalEmail(value)) {
+        setEmailError("Ce mail n'est pas un email professionnel.");
+      } else {
+        setEmailError("");
+      }
+    }
+  };
 
   const handleSelectChange = (value: string) => {
     setFormData((prev) => ({ ...prev, industryType: value }))
@@ -47,7 +70,11 @@ export default function RegisterCompany() {
     e.preventDefault()
     setIsSubmitting(true)
     setError("")
-
+    if (!isProfessionalEmail(formData.email)) {
+      setError("Veuillez utiliser une adresse e-mail professionnelle.");
+      setIsSubmitting(false);
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match")
@@ -56,7 +83,7 @@ export default function RegisterCompany() {
     }
 
     try {
-
+//const data crypt and store to local storage
       const data = await authService.registerCompany({
         ...formData,
         phone: phoneNumber,
@@ -64,7 +91,13 @@ export default function RegisterCompany() {
 
       })
 
-      // Redirect to verify email page
+      localStorage.setItem("emailvrf", formData.email);
+      console.log("✅ Email stocké dans pendingEmail:", formData.email); // ✅ Vérification
+      localStorage.setItem("emailvrf",formData.email)
+
+      localStorage.setItem("user_roleRegister", "company");
+
+
       router.push("/verify-email")
     } catch (error: any) {
       console.error("Registration error:", error)
@@ -123,11 +156,12 @@ export default function RegisterCompany() {
                     type="email"
                     autoComplete="email"
                     required
-                    className="mt-1"
+                    className={`mt-1 ${emailError ? "border-red-500" : ""}`}
                     placeholder={t("registerCompany.email")}
                     value={formData.email}
-                    onChange={handleChange}
-                  />
+                    onChange={handleChange}     />
+                    {emailError && <p className="text-xs text-red-500 mt-1">{emailError}</p>}
+
                 </div>
 
                 <div>

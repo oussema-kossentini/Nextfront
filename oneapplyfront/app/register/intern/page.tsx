@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React, {useEffect} from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
@@ -17,9 +17,17 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { authService } from "@/services/auth-service"
 import type { E164Number } from "react-phone-number-input";
+import {useUser} from "@/contexts/UserContext";
+import {encryptData, generateKey} from "@/app/utils/crypto-utils";
 
 export default function RegisterIntern() {
+  useEffect(() => {
+    localStorage.clear();
+    console.log("🗑️ LocalStorage vidé !");
+  }, []);
+
   const { t } = useLanguage()
+
   const router = useRouter()
   const [formData, setFormData] = useState({
     firstName: "",
@@ -61,6 +69,12 @@ export default function RegisterIntern() {
         role: "intern",
         birthDate: formattedBirthDate,
       })
+
+
+      localStorage.setItem("emailvrf", formData.email);
+      //await authService.sendOtp(formData.email);
+      console.log("✅ Email stocké dans pendingEmail:", formData.email); // ✅ Vérification
+      localStorage.setItem("user_roleRegister", "Intern");
 
       // Redirect to verify email page
       router.push("/verify-email")

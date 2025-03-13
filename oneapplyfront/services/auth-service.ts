@@ -1,7 +1,9 @@
+import axios from "axios";
+
 const BASE_URL = "http://localhost:3000"; // Ton backend NestJS
 
 class AuthService {
-  async login(email: string, password: string) {
+/*  async login(email: string, password: string) {
     try {
       const response = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
@@ -17,20 +19,52 @@ class AuthService {
         throw new Error(`Login failed: ${errorText}`);
       }
 
-      const data = await response.json();
-
-      // Ajoute explicitement la mise à jour locale du login
       localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("userRole", data.user.role);
+
       window.dispatchEvent(new Event("storage"));
 
-      return data;
     } catch (error) {
       console.error("Login error:", error);
       throw error;
     }
   }
 
+  */
+  async login(email: string, password: string) {
+    const response = await axios.post("http://localhost:3000/auth/login", { email, password }, {
+      withCredentials: true // Important pour gérer les cookies si le token est envoyé via cookie
+    });
+    return response.data; // Doit retourner { message: "Log in successfully!", token?: string }
+  }
+ /* async login(email: string, password: string) {
+    try {
+      const response = await fetch("http://localhost:3000/auth/login", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      localStorage.setItem("isAuthenticated", "true");
+      const data = await response.json();
+      console.log("🔍 Réponse de login:", data); // ✅ Vérifier ce que login retourne
+      return data;
+
+    } catch (error) {
+      console.error("❌ Erreur de connexion:", error);
+      throw error;
+    }
+  }
+*/
+  async sendOtp(email: string) {
+    try {
+      const response = await axios.post(`${BASE_URL}/auth/send-otp1`, { email });
+      console.log("✅ OTP envoyé avec succès :", response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error("❌ Erreur lors de l'envoi de l'OTP :", error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || "Erreur lors de l'envoi de l'OTP.");
+    }
+  }
 
   async registerIntern(internData: any) {
     try {
@@ -39,7 +73,7 @@ class AuthService {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // ✅ Envoie les cookies
+
         body: JSON.stringify(internData),
       });
       localStorage.setItem("isAuthenticated", "true");
@@ -56,31 +90,36 @@ class AuthService {
       throw error;
     }
   }
-
   async registerCompany(companyData: any) {
     try {
       const response = await fetch(`${BASE_URL}/auth/register-company`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include", //hot el cookies
         body: JSON.stringify(companyData),
       });
       localStorage.setItem("isAuthenticated", "true");
 
-
-
       if (!response.ok) {
-        throw new Error("Registration failed");
+        const errorData = await response.json();
+        if (errorData.message === 'Email already exists') {
+          throw new Error('Email already exists');
+        } else {
+          throw new Error('Registration failed');
+        }
       }
 
-      return await response.json();
+      const data = await response.json();
+      //localStorage.setItem("isAuthenticated", "true");
+
+      return data;
     } catch (error) {
       console.error("Registration error:", error);
       throw error;
     }
   }
+
 
   async getUserInfo() {
     try {
@@ -120,6 +159,7 @@ class AuthService {
   async logout() {
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("userRole");
+    localStorage.clear();
     try {
       await fetch(`${BASE_URL}/auth/logout`, {
         method: "POST",
@@ -149,15 +189,7 @@ class AuthService {
   async getUserRole() {
     return localStorage.getItem("userRole") || null;
   }
-  /*async getUserRole() {
-    try {
-      const userInfo = await this.getUserInfo();
-      return userInfo?.role || null; // ✅ Retourne le rôle si disponible
-    } catch {
-      return null;
-    }
-  }
-  */
+
   initiateGoogleLogin() {
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
     const redirectUri = "http://localhost:3001/oauth2-redirect"; // Correspond à ton backend
@@ -198,44 +230,9 @@ class AuthService {
       throw error;
     }
   }
-  async exchangeCodeForToken7(code: string) {
-    try {
-      const response = await fetch(`${BASE_URL}/auth/exchange-code?code=${encodeURIComponent(code)}`, {
-        method: "GET",
-        credentials: "include", // ✅ Utilisation des cookies pour stocker le token
-      });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to exchange code: ${errorText}`);
-      }
 
-      const data = await response.json();
-      window.dispatchEvent(new Event("storage")); // ✅ Met à jour l'état de l'authentification
-      return data;
-    } catch (error) {
-      console.error("Error exchanging code for token:", error);
-      throw error;
-    }
-  }
 
-  async checkAndRedirectByRole(router?: any) {
-    const userInfo = await this.getUserInfo();
-    if (!userInfo) return false;
-
-    switch (userInfo.role) {
-      case "intern":
-        if (router) router.push("/profile/intern");
-        else window.location.href = "/profile/intern";
-        return true;
-      case "company":
-        if (router) router.push("/profile/company");
-        else window.location.href = "/profile/company";
-        return true;
-      default:
-        return false;
-    }
-  }
 }
 
 export const authService = new AuthService();
