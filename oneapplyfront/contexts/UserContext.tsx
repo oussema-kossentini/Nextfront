@@ -80,18 +80,14 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, [user]);
 
     useEffect(() => {
-        // 🔥 Vérifie l'email en attente de vérification
-        const storedEmail = localStorage.getItem("pendingEmail");
-        if (storedEmail) {
-            setPendingEmailState(storedEmail);
-        }
+
 
         // 🔥 Récupère l'utilisateur au démarrage
         fetchUser();
 
         // 🔄 Met à jour l'utilisateur toutes les 2 secondes
-        const interval = setInterval(fetchUser, 2000);
-        return () => clearInterval(interval);
+      //  const interval = setInterval(fetchUser, 2000);
+    //    return () => clearInterval(interval);
     }, []);
 
     return (

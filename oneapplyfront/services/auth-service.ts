@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3001"; // Ton backend NestJS
+const BASE_URL = "http://localhost:3000"; // Ton backend NestJS
 
 class AuthService {
 /*  async login(email: string, password: string) {
@@ -30,8 +30,34 @@ class AuthService {
   }
 
   */
+  async resetPassword(email: string,  newPassword: string) {
+    try {
+      const response = await axios.post(`${BASE_URL}/auth/reset-password`, {
+        email,
+
+        newPassword,
+      });
+      console.log("✅ Mot de passe réinitialisé avec succès :", response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error("❌ Erreur lors de la réinitialisation du mot de passe :", error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || "Échec de la réinitialisation du mot de passe.");
+    }
+  }
+  async sendResetCode(email: string) {
+    try {
+      const response = await axios.post("http://localhost:3000/auth/forgot-password", { email });
+      console.log("✅ Code de réinitialisation envoyé :", response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error("❌ Erreur lors de l'envoi du code :", error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || "Impossible d'envoyer le code de réinitialisation.");
+    }
+  }
+
+
   async login(email: string, password: string) {
-    const response = await axios.post("http://localhost:3001/auth/login", { email, password }, {
+    const response = await axios.post("http://localhost:3000/auth/login", { email, password }, {
       withCredentials: true // Important pour gérer les cookies si le token est envoyé via cookie
     });
     return response.data; // Doit retourner { message: "Log in successfully!", token?: string }

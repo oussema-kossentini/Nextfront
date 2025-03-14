@@ -1,6 +1,6 @@
 'use client';
 
-const BASE_URL = "http://localhost:3001"; // Ton backend NestJS
+const BASE_URL = "http://localhost:3000"; // Ton backend NestJS
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -46,6 +46,7 @@ export default function VerifyCodePage() {
 
             if (response.ok) {
                 setIsVerified(true);
+                sessionStorage.setItem("resetToken", "verified");
             }
         } catch (err) {
             setError('Invalid or expired code. Please try again.');
@@ -80,6 +81,7 @@ export default function VerifyCodePage() {
     // Redirection après vérification réussie
     useEffect(() => {
         if (isVerified) {
+           // sessionStorage.setItem("resetToken", "verified");
             console.log('isVerified updated to:', isVerified); // Vérifie la mise à jour
             router.push(`reset-password?email=${encodeURIComponent(email)}`);
         }

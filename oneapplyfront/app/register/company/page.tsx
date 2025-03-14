@@ -27,7 +27,7 @@ export default function RegisterCompany() {
   }, []);
 
   const { t } = useLanguage()
-  const { setPendingEmail } = useUser(); // ✅ Stocke temporairement l'email
+
   const router = useRouter()
   const [formData, setFormData] = useState({
     companyName: "",

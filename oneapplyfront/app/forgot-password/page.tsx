@@ -2,7 +2,7 @@
 
 import {verify} from "node:crypto";
 
-const BASE_URL = "http://localhost:3001"; // Ton backend NestJS
+const BASE_URL = "http://localhost:3000"; // Ton backend NestJS
 
 
 import { useState } from 'react';
@@ -12,34 +12,28 @@ import { Input } from '@/components/ui/input';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { Link } from 'lucide-react';
+import {authService} from "@/services/auth-service";
 
 export default function ForgotPassword() {
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
     const router = useRouter();
-
+    const [isLoading, setIsLoading] = useState(false);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+        setIsLoading(true);
         try {
-            const response = await fetch(`${BASE_URL}/auth/forgot-password`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email }),
-            });
-
-            // Vérification alternative avec response.ok
-            if (response.ok) {
-                const data = await response.json(); // Optionnel : pour extraire des données si nécessaire
+console.log("email:",email);
+            await authService.sendResetCode(email);
                 router.push(`verifyEmailForgetpassword?email=${encodeURIComponent(email)}`);
-            } else {
-                throw new Error('Failed to send verification code');
-            }
+
         } catch (err) {
             setError('Invalid email or failed to send code. Please try again.');
         }
-    };
 
+finally
+    { setIsLoading(false); }}
     return (
         <div className="min-h-screen flex flex-col">
             <SiteHeader />
