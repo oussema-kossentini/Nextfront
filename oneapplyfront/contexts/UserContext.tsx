@@ -53,7 +53,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // ✅ Fonction pour récupérer l'utilisateur depuis l'API
     const fetchUser = async () => {
         try {
-            const response = await fetch("http://localhost:3000/auth/me", {
+            const response = await fetch("http://localhost:3001/auth/me", {
                 method: "GET",
                 credentials: "include"
             });

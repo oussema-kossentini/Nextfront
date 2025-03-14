@@ -1,6 +1,6 @@
 import { authService } from "@/services/auth-service"
 
-const API_URL = "http://localhost:3000"
+const API_URL = "http://localhost:3001"
 
 interface FetchOptions extends RequestInit {
   requireAuth?: boolean

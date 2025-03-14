@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3000"; // Ton backend NestJS
+const BASE_URL = "http://localhost:3001"; // Ton backend NestJS
 
 class AuthService {
 /*  async login(email: string, password: string) {
@@ -31,7 +31,7 @@ class AuthService {
 
   */
   async login(email: string, password: string) {
-    const response = await axios.post("http://localhost:3000/auth/login", { email, password }, {
+    const response = await axios.post("http://localhost:3001/auth/login", { email, password }, {
       withCredentials: true // Important pour gérer les cookies si le token est envoyé via cookie
     });
     return response.data; // Doit retourner { message: "Log in successfully!", token?: string }
